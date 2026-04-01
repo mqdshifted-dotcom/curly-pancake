@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>2048</title>
+<style>
+body {
+    background: #faf8ef;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+}
+#game-container {
+    width: 400px;
+    margin: 40px auto;
+    background: #bbada0;
+    padding: 15px;
+    border-radius: 10px;
+}
+.tile {
+    width: 80px;
+    height: 80px;
+    background: #cdc1b4;
+    margin: 10px;
+    float: left;
+    line-height: 80px;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.row {
+    clear: both;
+}
+</style>
+</head>
+<body>
+
+<h1>2048</h1>
+<p>Use arrow keys to move tiles</p>
+
+<div id="game-container"></div>
+
+<script>
+const size = 4;
+let board = [];
+
+function setup() {
+    board = [];
+    for (let i = 0; i < size; i++) {
+        board[i] = [];
+        for (let j = 0; j < size; j++) {
+            board[i][j] = 0;
+        }
+    }
+    addTile();
+    addTile();
+    draw();
+}
+
+function addTile() {
+    let empty = [];
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            if (board[i][j] === 0) empty.push({x: i, y: j});
+        }
+    }
+    if (empty.length === 0) return;
+    let spot = empty[Math.floor(Math.random() * empty.length)];
+    board[spot.x][spot.y] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function draw() {
+    let container = document.getElementById("game-container");
+    container.innerHTML = "";
+    for (let i = 0; i < size; i++) {
+        let row = document.createElement("div");
+        row.className = "row";
+        for (let j = 0; j < size; j++) {
+            let tile = document.createElement("div");
+            tile.className = "tile";
+            tile.textContent = board[i][j] === 0 ? "" : board[i][j];
+            row.appendChild(tile);
+        }
+        container.appendChild(row);
+    }
+}
+
+function slide(row) {
+    row = row.filter(val => val);
+    while (row.length < size) row.push(0);
+    return row;
+}
+
+function combine(row) {
+    for (let i = 0; i < size - 1; i++) {
+        if (row[i] !== 0 && row[i] === row[i + 1]) {
+            row[i] *= 2;
+            row[i + 1] = 0;
+        }
+    }
+    return row;
+}
+
+function operate(row) {
+    row = slide(row);
+    row = combine(row);
+    row = slide(row);
+    return row;
+}
+
+function rotate(board) {
+    let newBoard = [];
+    for (let i = 0; i < size; i++) {
+        newBoard[i] = [];
+        for (let j = 0; j < size; j++) {
+            newBoard[i][j] = board[j][i];
+        }
+    }
+    return newBoard;
+}
+
+document.addEventListener("keydown", e => {
+    let moved = false;
+    if (e.key === "ArrowLeft") {
+        for (let i = 0; i < size; i++) {
+            let row = board[i];
+            let newRow = operate(row);
+            if (newRow.toString() !== row.toString()) moved = true;
+            board[i] = newRow;
+        }
+    }
+    if (e.key === "ArrowRight") {
+        for (let i = 0; i < size; i++) {
+            let row = board[i].slice().reverse();
+            let newRow = operate(row).reverse();
+            if (newRow.toString() !== board[i].toString()) moved = true;
+            board[i] = newRow;
+        }
+    }
+    if (e.key === "ArrowUp") {
+        board = rotate(board);
+        for (let i = 0; i < size; i++) {
+            let row = board[i];
+            let newRow = operate(row);
+            if (newRow.toString() !== row.toString()) moved = true;
+            board[i] = newRow;
+        }
+        board = rotate(board);
+    }
+    if (e.key === "ArrowDown") {
+        board = rotate(board);
+        for (let i = 0; i < size; i++) {
+            let row = board[i].slice().reverse();
+            let newRow = operate(row).reverse();
+            if (newRow.toString() !== board[i].toString()) moved = true;
+            board[i] = newRow;
+        }
+        board = rotate(board);
+    }
+    if (moved) {
+        addTile();
+        draw();
+    }
+});
+
+setup();
+</script>
+
+</body>
+</html>
