@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Game Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>My Game Hub</h1>
+    <input type="text" id="search" placeholder="Search games...">
+</header>
+
+<div id="game-container">
+    <div class="game-card" data-name="Slope">
+        <img src="assets/slope.png">
+        <p>Slope</p>
+        <a href="games/slope/index.html">Play</a>
+    </div>
+
+    <div class="game-card" data-name="Run 3">
+        <img src="assets/run3.png">
+        <p>Run 3</p>
+        <a href="games/run3/index.html">Play</a>
+    </div>
+
+    <div class="game-card" data-name="1v1.lol">
+        <img src="assets/1v1.png">
+        <p>1v1.lol</p>
+        <a href="games/1v1/index.html">Play</a>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
